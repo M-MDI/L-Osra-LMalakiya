@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="y.png" type="image/png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>L'OSRA LMALAKIYA</title>
+    <style>
+      :root {
+        --old-gold: #cfb53b;
+        --dark-gold: #a89030;
+        --black: #1a1a1a;
+        --darker-black: #0f0f0f;
+      }
+
+      body {
+        background-image: url("/push-sawp/osra/OMb.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        font-family: "Arial", sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        background: var(--black);
+        color: var(--old-gold);
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        color: var(--old-gold);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      .roulette-section,
+      .timer-section {
+        background: var(--darker-black);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(207, 181, 59, 0.2);
+        border: 1px solid var(--old-gold);
+      }
+
+      .wheel-container {
+        position: relative;
+        width: 400px;
+        height: 400px;
+        margin: 20px auto;
+      }
+
+      .wheel {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        position: absolute;
+        background: var(--darker-black);
+        border: 3px solid var(--old-gold);
+        transform-origin: center;
+        transition: transform 5s cubic-bezier(0.5, 0, 0.5, 1);
+      }
+
+      .wheel-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        background: var(--old-gold);
+        border-radius: 50%;
+        z-index: 2;
+      }
+
+      .pointer {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 30px solid var(--old-gold);
+        z-index: 2;
+      }
+
+      .wheel-item {
+        position: absolute;
+        width: 50%;
+        height: 2px;
+        background: var(--old-gold);
+        transform-origin: 100% 50%;
+        left: 0;
+        top: 50%;
+      }
+
+      .wheel-text {
+        position: absolute;
+        transform-origin: 0 50%;
+        color: var(--old-gold);
+        white-space: nowrap;
+        padding-left: 50px;
+        font-size: 14px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        margin-right: 10px;
+        background: var(--darker-black);
+        border: 1px solid var(--old-gold);
+        border-radius: 4px;
+        color: var(--old-gold);
+        width: 200px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background: var(--old-gold);
+        color: var(--black);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background: var(--dark-gold);
+        transform: translateY(-2px);
+      }
+
+      .winner {
+        margin: 20px 0;
+        padding: 15px;
+        background: rgba(207, 181, 59, 0.1);
+        border-radius: 4px;
+        text-align: center;
+        font-size: 1.2em;
+        border: 1px solid var(--old-gold);
+      }
+
+      .name-list {
+        margin: 20px 0;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .name-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        margin: 5px 0;
+        background: rgba(207, 181, 59, 0.1);
+        border-radius: 4px;
+        border: 1px solid var(--old-gold);
+      }
+
+      .chronometer {
+        font-size: 2.5em;
+        text-align: center;
+        margin: 20px 0;
+        font-family: monospace;
+        text-shadow: 0 0 10px rgba(207, 181, 59, 0.5);
+      }
+
+      .remove-btn {
+        background: #8b0000;
+        color: var(--old-gold);
+        padding: 2px 8px;
+      }
+
+      .remove-btn:hover {
+        background: #a00000;
+      }
+
+      .controls {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .input-section {
+        text-align: center;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      <img src="y.png" alt="Icon" style="max-width: 100px" />
+    </h1>
+
+    <div class="container">
+      <div class="roulette-section">
+        <div class="input-section">
+          <input type="text" id="nameInput" placeholder="Enter a name" />
+          <button onclick="addName()">Add Name</button>
+        </div>
+
+        <div class="wheel-container">
+          <div class="pointer"></div>
+          <div class="wheel" id="wheel"></div>
+          <div class="wheel-center"></div>
+        </div>
+
+        <div class="controls">
+          <button onclick="spin()">Spin</button>
+        </div>
+
+        <div class="winner" id="winner"></div>
+
+        <div class="name-list" id="nameList"></div>
+      </div>
+
+      <div class="timer-section">
+        <h2>Chronometer</h2>
+        <div class="chronometer" id="chronometer">00:00:00</div>
+        <div class="controls">
+          <button id="startBtn" onclick="startChronometer()">Start</button>
+          <button onclick="resetChronometer()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let names = [];
+      let isSpinning = false;
+      let chronometerInterval;
+      let chronometerTime = 0;
+      let isRunning = false;
+      let totalRotation = 0;
+
+      function addName() {
+        const nameInput = document.getElementById("nameInput");
+        const name = nameInput.value.trim();
+
+        if (name && !names.includes(name)) {
+          names.push(name);
+          nameInput.value = "";
+          updateWheel();
+          updateNameList();
+        }
+      }
+
+      function removeName(index) {
+        names.splice(index, 1);
+        updateWheel();
+        updateNameList();
+      }
+
+      function updateNameList() {
+        const nameList = document.getElementById("nameList");
+        nameList.innerHTML = "";
+
+        names.forEach((name, index) => {
+          const div = document.createElement("div");
+          div.className = "name-item";
+          div.innerHTML = `
+                    <span>${name}</span>
+                    <button class="remove-btn" onclick="removeName(${index})">×</button>
+                `;
+          nameList.appendChild(div);
+        });
+      }
+
+      function updateWheel() {
+        const wheel = document.getElementById("wheel");
+        wheel.innerHTML = "";
+
+        const angleStep = 360 / names.length;
+
+        names.forEach((name, index) => {
+          // Create line
+          const line = document.createElement("div");
+          line.className = "wheel-item";
+          line.style.transform = `rotate(${index * angleStep}deg)`;
+
+          // Create text
+          const text = document.createElement("div");
+          text.className = "wheel-text";
+          text.textContent = name;
+          text.style.transform = `rotate(${90}deg)`;
+
+          line.appendChild(text);
+          wheel.appendChild(line);
+        });
+      }
+
+      function spin() {
+        if (isSpinning || names.length < 2) return;
+
+        const wheel = document.getElementById("wheel");
+        const winner = document.getElementById("winner");
+        isSpinning = true;
+        winner.textContent = "";
+
+        // Calculate new rotation
+        const minSpins = 5; // Minimum number of full rotations
+        const maxSpins = 10; // Maximum number of full rotations
+        const randomSpins = minSpins + Math.random() * (maxSpins - minSpins);
+        const extraDegrees = Math.random() * 360;
+        const totalDegrees = randomSpins * 360 + extraDegrees;
+
+        // Update total rotation and apply
+        totalRotation += totalDegrees;
+        wheel.style.transform = `rotate(${totalRotation}deg)`;
+
+        setTimeout(() => {
+          isSpinning = false;
+          const normalizedRotation = totalRotation % 360;
+          const winningIndex =
+            Math.floor((360 - normalizedRotation) / (360 / names.length)) %
+            names.length;
+
+          const winningName = names[winningIndex];
+          winner.textContent = `🏆 Winner: ${winningName} 🏆`;
+          winner.style.animation = "pulse 1s";
+
+          // Remove the winner
+          removeName(winningIndex);
+        }, 5000);
+      }
+
+      function updateChronometer() {
+        const hours = Math.floor(chronometerTime / 3600);
+        const minutes = Math.floor((chronometerTime % 3600) / 60);
+        const seconds = chronometerTime % 60;
+
+        document.getElementById("chronometer").textContent = `${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      function startChronometer() {
+        const startBtn = document.getElementById("startBtn");
+        if (!isRunning) {
+          isRunning = true;
+          startBtn.textContent = "Pause";
+          chronometerInterval = setInterval(() => {
+            chronometerTime++;
+            updateChronometer();
+          }, 1000);
+        } else {
+          isRunning = false;
+          startBtn.textContent = "Start";
+          clearInterval(chronometerInterval);
+        }
+      }
+
+      function resetChronometer() {
+        isRunning = false;
+        document.getElementById("startBtn").textContent = "Start";
+        clearInterval(chronometerInterval);
+        chronometerTime = 0;
+        updateChronometer();
+      }
+
+      // Add keyboard support
+      document
+        .getElementById("nameInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            addName();
+          }
+        });
+    </script>
+  </body>
+</html>
