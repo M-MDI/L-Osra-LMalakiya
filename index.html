@@ -47,6 +47,13 @@
         box-shadow: 0 0 15px rgba(207, 181, 59, 0.2);
         border: 1px solid var(--old-gold);
       }
+      .click-section {
+        background: var(--darker-black);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(207, 181, 59, 0.2);
+        border: 1px solid var(--old-gold);
+      }
 
       .wheel-container {
         position: relative;
@@ -227,6 +234,15 @@
           <button id="startBtn" onclick="startChronometer()">Start</button>
           <button onclick="resetChronometer()">Reset</button>
         </div>
+        <div>
+            <h2>Click Counter</h2>
+            <div class="chronometer" id="clickCount"><center>0</center></div>
+            <div class="controls">
+              <button onclick="incrementClickCount()">Count Click</button>
+              <button onclick="resetClickCount()">Reset Count</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -373,6 +389,17 @@
             addName();
           }
         });
+        let clickCount = 0;
+
+function incrementClickCount() {
+  clickCount++;
+  document.getElementById('clickCount').textContent = clickCount;
+}
+
+function resetClickCount() {
+  clickCount = 0;
+  document.getElementById('clickCount').textContent = clickCount;
+}
     </script>
   </body>
 </html>
